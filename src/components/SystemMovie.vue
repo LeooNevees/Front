@@ -1,13 +1,23 @@
 <template>
   <div class="container-fluid">
     <div class="row flex-nowrap">
-      <NavBar />
-      
-      <main class="col" :class="[isMenuActive ? 'position-relative' : 'position-absolute']">
-        <a href="#" data-bs-target="#sidebar" data-bs-toggle="collapse" class="border rounded-3 p-1 text-decoration-none text-dark" v-on:click="setMenu"><i class="bi bi-list bi-lg py-2 p-1"></i> Menu</a>
-        
-        <router-view></router-view>
-        
+        <NavBar v-if="!isLoginPage"/>
+
+      <main
+        class="col"
+        :class="[isMenuActive ? 'position-relative' : 'position-absolute']"
+      >
+        <a
+          href="#"
+          data-bs-target="#sidebar"
+          data-bs-toggle="collapse"
+          class="border rounded-3 p-1 text-decoration-none text-dark"
+          v-on:click="setMenu"
+          v-if="!isLoginPage"
+          ><i class="bi bi-list bi-lg py-2 p-1"></i> Menu</a
+        >
+
+        <router-view :class="[isLoginPage ? 'mt-5' : '']"></router-view>
       </main>
     </div>
   </div>
@@ -28,12 +38,20 @@ export default defineComponent({
       isMenuActive: true,
     };
   },
-  
+
   methods: {
-    setMenu(){
+    setMenu() {
       this.isMenuActive = this.isMenuActive ? false : true;
-    }
+    },
   },
-  
+
+  computed: {
+    isLoginPage() {
+      if (this.$route.name == "login" || this.$route.name == "registration") {
+        return true;
+      }
+      return false;
+    },
+  },
 });
 </script>

@@ -125,7 +125,7 @@
             </div>
 
             <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
-              <router-link to="/movie/browse" class="me-md-4 w-25">
+              <router-link to="/" class="me-md-4 w-25">
                 <button class="btn btn-dark" type="button">Cancelar</button>
               </router-link>
 
@@ -255,7 +255,11 @@ export default defineComponent({
 
       axios
         .post("http://localhost/api/movies/create", data, {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization:
+              "Bearer " + JSON.parse(localStorage.getItem("authorization")),
+          },
         })
         .then((response) => {
           alert(response.data.message);
@@ -292,9 +296,20 @@ export default defineComponent({
     onlyNumbers(value) {
       return (value + "").replace(/\D+/g, "");
     },
+
+    validatePage() {
+      if (
+        !localStorage.getItem("authorization") ||
+        localStorage.getItem("authorization") === ""
+      ) {
+        this.$router.push("/user/login");
+      }
+    },
   },
 
   mounted() {
+    this.validatePage();
+
     this.getInformations();
   },
 });

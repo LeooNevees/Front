@@ -5,7 +5,7 @@
         <h2 class="fst-italic">Filmes e Séries</h2>
       </div>
       <div class="mt-4 d-flex justify-content-center">
-        <form class="d-flex w-50" role="search">
+        <div class="d-flex w-50">
           <input
             class="form-control me-2"
             type="search"
@@ -16,14 +16,14 @@
           <button class="btn btn-purple" type="button" v-on:click="getMovies">
             Buscar
           </button>
-        </form>
+        </div>
       </div>
 
       <hr />
 
       <div class="position-relative top-50 start-50 mb-3">
-        <router-link to="/movie/new">
-          <button type="button" class="btn btn-outline-success"> + </button>
+        <router-link to="/movie/new" v-if="isLogged">
+          <button type="button" class="btn btn-outline-success">+</button>
         </router-link>
       </div>
 
@@ -52,17 +52,31 @@
                       class="bi me-1"
                       :class="[
                         parseInt(movie.quantity_vote) > 0 &&
-                        movie.users_vote.includes(1)
+                        movie.users_vote.includes(usersId)
                           ? 'bi-heart-fill'
                           : 'bi-heart',
                       ]"
+                      v-if="isLogged"
                     ></i>
                   </button>
                 </div>
 
-                <small class="text-success">{{
-                  treatmentVote(movie.quantity_vote)
-                }}</small>
+                <div
+                  class="d-flex justify-content-between align-items-center mt-1"
+                >
+                  <small class="text-success">{{
+                    treatmentVote(movie.quantity_vote)
+                  }}</small>
+
+                  <button
+                    type="button"
+                    class="btn btn-link me-1"
+                    v-if="isAdmin"
+                    v-on:click="deleteMovie(movie.id)"
+                  >
+                    <i class="bi bi-trash3-fill text-danger"></i>
+                  </button>
+                </div>
 
                 <div
                   class="d-flex justify-content-between align-items-center mt-3"
@@ -75,7 +89,7 @@
                       data-bs-target="#modalDescriptionMovie"
                       v-on:click="modalDetailsMovie(movie.id)"
                     >
-                      + Informações
+                      + Detalhes
                     </button>
                   </div>
                   <button
@@ -151,8 +165,10 @@ export default defineComponent({
   data() {
     return {
       params: "",
-      imageAsBase64: "",
       description: "",
+      usersId: "",
+      isLogged: false,
+      isAdmin: false,
       movies: [],
       detailsMovies: {
         title: "",
@@ -230,10 +246,15 @@ export default defineComponent({
         return false;
       }
 
-      let user = 1;
-      console.log(movie.quantity_vote > 0 && movie.users_vote.includes(user));
+      if (!this.isLogged) {
+        alert("Necessário fazer Login para continuar");
+        this.$router.push("/user/login");
+      }
 
-      if (movie.quantity_vote > 0 && movie.users_vote.includes(user)) {
+      let dataUser = JSON.parse(localStorage.getItem("user"));
+      this.usersId = dataUser.id;
+
+      if (movie.quantity_vote > 0 && movie.users_vote.includes(this.usersId)) {
         this.removeVote();
         return true;
       }
@@ -242,7 +263,7 @@ export default defineComponent({
     },
 
     applyVote(id) {
-      if (id === "") {
+      if (id === "" || this.usersId === "") {
         alert(
           "Parâmetros inválidos para votação. Por favor recarregue a página"
         );
@@ -254,10 +275,19 @@ export default defineComponent({
       }
 
       axios
-        .post("http://localhost/api/vote/create", {
-          movie_id: id,
-          users_id: 1,
-        })
+        .post(
+          "http://localhost/api/vote/create",
+          {
+            movie_id: id,
+            users_id: this.usersId,
+          },
+          {
+            headers: {
+              Authorization:
+                "Bearer " + JSON.parse(localStorage.getItem("authorization")),
+            },
+          }
+        )
         .then((response) => {
           alert(response.data.message);
           this.getMovies();
@@ -271,8 +301,7 @@ export default defineComponent({
     },
 
     removeVote() {
-      let user = "1";
-      if (user === "") {
+      if (this.usersId === "") {
         alert("Erro ao desfazer o Voto. Por favor recarregue a Página");
         return false;
       }
@@ -282,7 +311,12 @@ export default defineComponent({
       }
 
       axios
-        .delete("http://localhost/api/vote/destroy/" + user)
+        .delete("http://localhost/api/vote/destroy/" + this.usersId, {
+          headers: {
+            Authorization:
+              "Bearer " + JSON.parse(localStorage.getItem("authorization")),
+          },
+        })
         .then((response) => {
           alert(response.data.message);
           this.getMovies();
@@ -295,10 +329,60 @@ export default defineComponent({
           }
         });
     },
+
+    setUser() {
+      if (
+        localStorage.getItem("authorization") &&
+        localStorage.getItem("authorization") !== ""
+      ) {
+        this.isLogged = true;
+        let userLocal = JSON.parse(localStorage.getItem("user"));
+        this.usersId = userLocal.id;
+        this.isAdmin = userLocal.group == 1 ? true : false;
+      }
+    },
+
+    deleteMovie(id) {
+      if (id === "") {
+        alert("Parâmetro inválido. Por favor recarregue a página");
+        return false;
+      }
+
+      if (!confirm("Realmente deseja excluir esse Filme/Série?")) {
+        return false;
+      }
+
+      axios
+        .delete("http://localhost/api/movies/destroy/" + id, {
+          headers: {
+            Authorization:
+              "Bearer " + JSON.parse(localStorage.getItem("authorization")),
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          
+          alert(response.data.message);
+
+          if (response.data.error) {
+            return false;
+          }
+
+          this.getMovies();
+        })
+        .catch(function (error) {
+          console.error(error);
+          if (error.response.data.error) {
+            alert(error.response.data.message);
+          }
+        });
+    },
   },
 
   mounted() {
     this.getMovies();
+
+    this.setUser();
   },
 });
 </script>

@@ -1,28 +1,17 @@
 <template>
-  <SystemMovie v-if="isLogged" @validateLogin="setLogged" />
-  <!-- <LoginView v-else @validateLogin="setLogged" /> -->
+  <SystemMovie />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import SystemMovie from "./components/SystemMovie.vue";
-import LoginView from "./views/LoginView.vue";
+import LoginView from "./views/user/LoginView.vue";
 
 export default defineComponent({
   name: "App",
   components: {
     SystemMovie,
     LoginView,
-  },
-  data() {
-    return {
-      isLogged: true,
-    };
-  },
-  methods: {
-    setLogged(status) {
-      this.isLogged = status;
-    },
   },
 });
 </script>
