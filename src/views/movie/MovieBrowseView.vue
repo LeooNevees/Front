@@ -197,6 +197,7 @@ export default defineComponent({
           localStorage.setItem("movies", JSON.stringify(response.data.message));
         })
         .catch(function (error) {
+          alert('Erro ao tentar fazer requisição. Por favor tente mais tarde');
           console.error(error);
           if (error.response.data.error) {
             alert(error.response.data.message);
@@ -263,7 +264,7 @@ export default defineComponent({
     },
 
     applyVote(id) {
-      if (id === "" || this.usersId === "") {
+      if (id === "") {
         alert(
           "Parâmetros inválidos para votação. Por favor recarregue a página"
         );
@@ -279,7 +280,6 @@ export default defineComponent({
           "http://localhost/api/vote/create",
           {
             movie_id: id,
-            users_id: this.usersId,
           },
           {
             headers: {
@@ -294,6 +294,7 @@ export default defineComponent({
           return true;
         })
         .catch(function (error) {
+          alert('Erro ao tentar fazer requisição. Por favor tente mais tarde');
           if (error.response.data.error) {
             alert(error.response.data.message);
           }
@@ -311,7 +312,7 @@ export default defineComponent({
       }
 
       axios
-        .delete("http://localhost/api/vote/destroy/" + this.usersId, {
+        .delete("http://localhost/api/vote/destroy/", {
           headers: {
             Authorization:
               "Bearer " + JSON.parse(localStorage.getItem("authorization")),
@@ -324,6 +325,7 @@ export default defineComponent({
           return true;
         })
         .catch(function (error) {
+          alert('Erro ao tentar fazer requisição. Por favor tente mais tarde');
           if (error.response.data.error) {
             alert(error.response.data.message);
           }
@@ -371,6 +373,7 @@ export default defineComponent({
           this.getMovies();
         })
         .catch(function (error) {
+          alert('Erro ao tentar fazer requisição. Por favor tente mais tarde');
           console.error(error);
           if (error.response.data.error) {
             alert(error.response.data.message);

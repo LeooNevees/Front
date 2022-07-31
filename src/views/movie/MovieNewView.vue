@@ -180,6 +180,7 @@ export default defineComponent({
           this.genres = response.data.message;
         })
         .catch(function (error) {
+          alert('Erro ao tentar fazer requisição. Por favor tente mais tarde');
           console.error(error);
           if (error.response.data.error) {
             alert(error.response.data.message);
@@ -201,6 +202,7 @@ export default defineComponent({
           this.types = response.data.message;
         })
         .catch(function (error) {
+          alert('Erro ao tentar fazer requisição. Por favor tente mais tarde');
           console.error(error);
           if (error.response.data.error) {
             alert(error.response.data.message);
@@ -250,7 +252,6 @@ export default defineComponent({
       data.append("year_entry", this.year_entry);
       data.append("genre", this.genre_id);
       data.append("type_entertainment", this.type_entertainment_id);
-      data.append("user", "1");
       data.append("image", this.file);
 
       axios
@@ -271,6 +272,7 @@ export default defineComponent({
           this.clearInputs();
         })
         .catch(function (error) {
+          alert('Erro ao tentar fazer requisição. Por favor tente mais tarde');
           console.error(error);
           if (error.response.data.error) {
             alert(error.response.data.message);

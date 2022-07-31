@@ -86,6 +86,9 @@ export default defineComponent({
           this.$router.push("/");
         })
         .catch(function (error) {
+          
+          alert('Erro ao tentar fazer requisição. Por favor tente mais tarde');
+          
           if (error.response.data.error) {
             alert(error.response.data.message);
           }

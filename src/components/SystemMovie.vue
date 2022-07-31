@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
-    <div class="row flex-nowrap">
-        <NavBar v-if="!isLoginPage"/>
+    <div class="row">
+      <NavBar v-if="!isLoginPage" />
 
       <main
         class="col"

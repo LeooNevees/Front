@@ -4,11 +4,6 @@
       id="sidebar"
       class="collapse collapse-horizontal show border-end bg-grey bg-gradient"
     >
-    <!-- <div
-      id="sidebar"
-      class="collapse collapse-horizontal show border-end bg-grey bg-gradient position-fixed"
-      style="width: 17%"
-    > -->
       <div
         class="
           d-flex
@@ -105,7 +100,7 @@ export default defineComponent({
     },
 
     logout() {
-      if(!confirm('Realmente deseja Sair? ')){
+      if (!confirm("Realmente deseja Sair? ")) {
         return false;
       }
 
@@ -123,7 +118,7 @@ export default defineComponent({
           this.$router.push("/user/login");
         })
         .catch(function (error) {
-          console.error(error);
+          alert('Erro ao tentar fazer requisição. Por favor tente mais tarde');
           if (error.response.data.error) {
             alert(error.response.data.message);
           }
