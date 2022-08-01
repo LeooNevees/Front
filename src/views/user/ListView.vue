@@ -1,7 +1,10 @@
 <template>
   <div class="position-absolute w-100 h-100 body-login">
     <div class="container">
-      <div class="position-absolute top-50 start-50 translate-middle w-75 h-75">
+      <div class="text-center">
+          <img src="@/img/logos/nwStreaming.png" class="w-25 mt-5" />
+        </div>
+      <div class="position-absolute top-50 start-50 translate-middle w-75 h-75 mt-5">
         <h3 class="card-title fst-italic text-center mb-4">
           Controle de Usuários
         </h3>

@@ -1,6 +1,9 @@
 <template>
   <div class="position-relative">
     <div class="container-fluid">
+      <div class="text-center">
+          <img src="@/img/logos/nwStreaming.png" class="w-25 mt-5" />
+        </div>
       <div class="mt-4 d-flex justify-content-center">
         <div class="card w-50 mt-5 shadow">
           <div class="card-body">
@@ -130,7 +133,7 @@
               </router-link>
 
               <button
-                class="btn btn-success w-50"
+                class="btn btn-purple w-50"
                 type="button"
                 v-on:click="addMovie"
               >
